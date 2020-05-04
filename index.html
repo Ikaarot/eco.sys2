@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang = "pt-br">
+    <head>
+        <title>eco.sys</title>
+        <meta charset = "utf-8">
+        <link rel = "stylesheet" type = "text/css" href = "bootstrap/css/bootstrap.min.css">
+        <link rel = "stylesheet" type = "text/css" href = "css/style.css">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="pontosdecoleta.js"></script>
+        <script src="https://kit.fontawesome.com/69a8a974e9.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body>      
+      <script>
+         $('body').scrollspy({ target: '#navbar-example' })
+
+         function formatarPonto(ponto){
+            var texto;
+            
+            texto = 'Bairro: ' + ponto[2] + '<br>';
+            texto += 'Endereço: ' + ponto[3] + '<br>';
+            texto += 'Complemento: ' + ponto[4] + '<br>';
+            texto += 'Tipos de residuos que coleta: ' + ponto[1] + '<br>';
+            texto += 'Observação: ' + ponto[5] + '<br>';
+            return texto;
+         }
+
+         function getLocation(){
+            if(navigator.geolocation){
+               navigator.geolocation.getCurrentPosition(showPosition);
+          
+            }else{
+               alert("Seu navegador não suporta geolocalização.")
+            }
+         }
+
+         //Calcula a distância para o ponto de coleta
+         function showPosition(position){
+            var coordenada = [position.coords.latitude, position.coords.longitude];
+            lat1 = position.coords.latitude;
+            lon1 = position.coords.longitude;
+
+            var ponto;  
+            var menorDistancia = 10000 * 10000 ;
+            var menorPonto;
+
+               for(var i = 0; i < 135; i++){
+                  ponto = data.records[i];
+                  distancia = distance(lat1, lon1, ponto[6], parseFloat(ponto[7]));
+                  if(distancia < menorDistancia){
+                     menorDistancia = distancia;
+                     menorPonto = ponto;
+                  }
+               } 
+            console.log(menorDistancia);
+            console.log(menorPonto);
+            document.getElementById('infoContribua').innerHTML = formatarPonto(menorPonto);
+            document.getElementById('ONGS').style.display = 'none';
+         }
+
+         function distance(lat1, lon1, lat2, lon2) {
+            
+            var p = 0.017453292519943295;    // Math.PI / 180
+            var c = Math.cos;
+            var a = 0.5 - c((lat2 - lat1) * p)/2 + 
+                     c(lat1 * p) * c(lat2 * p) * 
+                     (1 - c((lon2 - lon1) * p))/2;
+         
+            return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+         }
+      </script>
+      
+      <div class = 'container'>
+         <div class = 'row'>
+            <div class = 'col-md-12'>
+        <nav class="nav flex-sm-column position-fixed">
+            <li class="nav-item">
+               <a class="nav-link" href="#sect-home" data-toggle="tooltip" data-placement="right" title="Ir para o ínicio da página.">Início</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#sect-jogo1" data-toggle="tooltip" data-placement="right" title="Compreenda o quão grave é a situação.">Minigame #1</a>
+             </li>
+            <li class="nav-item">
+               <a class="nav-link" href="#sect-jogo2" data-toggle="tooltip" data-placement="right" title="Teste seu conhecimento em um quiz.">Minigame #2 </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="#sect-contribua" data-toggle="tooltip" data-placement="right" title="Doe para organizações que necessitam."> Contribua </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="#sect-sobre" data-toggle="tooltip" data-placement="right" title="Entenda o nosso projeto."> Sobre  </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="#sect-contato" data-toggle="tooltip" data-placement="right" title="Entre em contato conosco."> Contato </a>
+            </li>
+         </nav>
+      </div>
+      </div>
+      </div>
+         
+         <section id="sect-home">
+            <div id ="hometitle"class="title">
+                <i class="fas fa-angle-left"></i> <i class="fas fa-leaf"></i> <i class="fas fa-angle-right"></i>
+                <br>eco.sys
+                <div class="subtitle" >
+                    <p>Uma experiência virtual sobre um problema real.</p>
+                </div>             
+            </div>
+            <a href="#sect-jogo1"><i id="arrow-home" class="fas fa-angle-double-down navarrow" click></i></a>
+         </section>
+         
+         <section id='sect-jogo1'>
+            <div class = 'container'>
+               <div class = 'row'>
+                  <div class='title col-md-12' id = "title1">             
+                     <div id = 'tituloClicker'>Clicker</div>
+                     <div id = "jogo1">                    
+                        <div id = "objetivo">Clique na árvore para fazer o máximo de pontos possível antes que o tempo acabe!
+                        <div class = "subtitle" id = "subtitle1">Clique no botão para iniciar</div>  
+                        <button id= 'btnJogo1' type="button" class="btn btn-light btn-outline-success " data-toggle="tooltip" data-placement="right" title="Clique para iniciar o jogo." onclick="iniciarJogo1()">Iniciar jogo</button></div> 
+                        <div id = "jogo1_elementos">
+                           <p id = 'relogio'></p>               
+                           <div id = "dica">(Clique no fogo para apaga-lo e ganhar +1 de pontos por clique)</div> 
+                           <div id = "dpq">Pontos por clique: 1</div>
+                           <p id ='titulo_jogo'>Clique na árvore!</p>                    
+                           <i id ='arvore' class="fas fa-tree" onclick="clicar()"></i>
+                           <p id='cliques'>0</p> 
+                           <p id='pontosloc'></p> </div>
+                     </div>
+                     </div> 
+                  </div>
+               </div>
+            </div>
+               <a href="#sect-jogo2"><i id="arrow-jogo" class="fas fa-angle-double-down navarrow"  click></i></a> 
+         </section>
+
+         <section id="sect-jogo2">
+            <div class = 'container'>
+               <div class = 'row'>
+                  <div class ="title col-md-12" id = "title2"><p id = 'tituloQuiz'>Hora do Quiz!</p>
+                  <div class = "subtitle" id = "subtitle2">
+                     <p id = "pergunta">Clique no botão para iniciar.</p>
+                     <button id = "btnJogo2" type="button" class="btn btn-light btn-outline-success" onclick = "iniciarJogo2()">Iniciar</button>
+                  </div>
+                  <div id='opcoes'>
+                     <button class = "quizOpcoes btn btn-light" id = 'op1' onclick = "verificarResposta(this)">Opção 1</button>
+                     <button class = "quizOpcoes btn btn-light" id = 'op2' onclick = "verificarResposta(this)">Opção 2</button>
+                     <button class = "quizOpcoes btn btn-light" id = 'op3' onclick = "verificarResposta(this)">Opção 3</button>
+                     <button class = "quizOpcoes btn btn-light" id = 'op4' onclick = "verificarResposta(this)">Opção 4</button>
+                  </div>
+                  </div>
+               </div>
+            </div> 
+            <a href="#sect-contribua"><i id="arrow-jogo2" class="fas fa-angle-double-down navarrow"  click></i></a>
+         </section>
+         
+         <section id="sect-contribua">
+            <div class = 'container'>
+               <div class = 'row'>
+                  <div class="title col-md-12"><p>Contribua!</p>
+                     <div class = "subtitle">
+                        <p>Você pode encontrar um ponto de coleta perto de você ou doar para alguma ONG necessitada:</p>
+                        <button id= 'btnDoacao' type="button" class="btn btn-light btn-outline-success" onclick="getLocation()">Encontrar ponto de coleta próximo de mim</button>
+                        <button id= 'btnDoacao' type="button" class="btn btn-light btn-outline-success" onclick="mostrarONGS()">Encontrar ONGs que necessitam de doação</button>
+                        
+                        <p id = 'infoContribua'></p>
+                        
+                        <div id = "ONGS">
+                           <a  href="https://doe.sosamazonia.org.br/" target="_blank"><button id= 'btnONG' type="button" class="btn btn-outline-light" data-toggle="tooltip" data-placement="bottom" title="Clique para ser redirecionado para plataforma oficial de doações da SOSAmazonia.">SOSAmazonia</button></a>
+                           <a href= "https://doe.wwf.org.br/wwf-brasil" target="_blank"><button id= 'btnONG' type="button" class="btn btn-outline-light" data-toggle="tooltip" data-placement="bottom" title="Clique para ser redirecionado para plataforma oficial de doações da WWF.">WWF</button></a>
+                           <a href= "http://www.centrosabia.org.br/doacoes" target="_blank"><button id= 'btnONG' type="button" class="btn btn-outline-light" data-toggle="tooltip" data-placement="bottom" title="Clique para ser redirecionado para plataforma oficial de doações do Centro Sabiá.">Centro Sabiá</button></a>
+                        </div>
+
+                     </div>                    
+                  </div> 
+                  <a href="#sect-sobre"><i id="arrow-contribua" class="fas fa-angle-double-down navarrow"  click></i></a>
+            </div> 
+         </div>
+         </section>
+
+         <section id="sect-sobre">
+            <div class = 'container'>
+               <div class = 'row'>
+                  <div class="title col-md-12">Sobre
+                     <p class = "subtitle">O eco.sys é uma aplicação que busca aproximar a sociedade das problemáticas ambientais que ocorrem no momento atual. Por meio do eco.sys pretendemos ajudar a 
+                        causa não apenas de modo superficial, mas incentivando as pessoas a agirem de acordo com suas realidades.</p>
+                  </div>
+                  <a href="#sect-contato"><i id="arrow-sobre" class="fas fa-angle-double-down navarrow"  click></i></a>
+               </div>
+            </div>
+         </section>
+         
+         <section id="sect-contato">
+            <div class = 'container'>
+               <div class = 'row'>
+                  <div class="title col-md-12">Contato
+                     <p class = "subtitle" id = "contato">Entre em contato conosco: <a id = 'email' href="mailto:eco.sys@email.com">eco.sys@exemplo.com</a></p>
+                  </div>
+                     
+               </div>
+            </div>
+         </section>
+
+         <script type="text/javascript" src="main.js"></script>
+    </body>
+</html>
